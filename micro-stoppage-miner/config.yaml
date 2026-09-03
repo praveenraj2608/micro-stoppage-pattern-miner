@@ -1,0 +1,51 @@
+# Micro-Stoppage Pattern Miner — configuration
+# All thresholds live here so behaviour is tunable per shop floor.
+
+detection:
+  debounce_floor_s: 2        # transitions shorter than this = sensor chatter (E3), ignored
+  micro_max_s: 300           # a stoppage <= this (and >= floor) is a "micro-stoppage"
+  stopped_states: [STOPPED, IDLE]   # states that count as a stoppage
+  running_state: RUNNING
+  setup_state: SETUP
+
+normalize:
+  # shorthand / typo expansions applied before matching
+  abbreviations:
+    matl: material
+    mat: material
+    jamd: jam
+    jammd: jam
+    chng: change
+    chg: change
+    adj: adjust
+    sens: sensor
+    op: operator
+    temp: temperature
+  # canonical cause -> trigger keywords (english + a few other languages / synonyms)
+  cause_keywords:
+    material_jam: [jam, stuck, blockage, clog, atasco, obstruccion, jaam]
+    misfeed: [misfeed, feed, feeder, mis-feed, no feed, alimentacion]
+    sensor_fault: [sensor, photoeye, photo eye, detector, sensore]
+    tool_change: [tool, insert, bit, blade, worn, tooling]
+    material_out: [empty, out of, no material, refill, reload, agotado]
+    operator_adjust: [adjust, tweak, manual, correction, ajuste]
+    temperature: [temp, temperature, overheat, hot, cooling]
+    quality_check: [quality, inspect, check, reject, scrap, defect]
+  fuzzy_threshold: 82        # 0-100 rapidfuzz score to accept a keyword match
+
+mining:
+  min_support: 0.02          # min fraction of micro-stoppages for a rule
+  min_confidence: 0.45
+  min_lift: 1.8
+  min_events_for_cause: 5    # cold-start guard (E4): fewer events -> "insufficient history"
+  min_report_events: 6       # a consolidated finding must cover >= this many events
+  consolidation_overlap: 0.3 # drop a rule if >30% of its events already explained
+  time_since_setup_buckets_min: [0, 30, 120, 480]  # bucket edges in minutes
+
+paths:
+  db: data/synthetic/miner.db
+  events_csv: data/synthetic/events.csv
+  ground_truth_csv: data/synthetic/ground_truth.csv
+
+api:
+  base_url: http://127.0.0.1:8000

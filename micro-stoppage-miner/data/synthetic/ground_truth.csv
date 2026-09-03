@@ -1,0 +1,5 @@
+machine_id,product_id,shift,cause,after_setup_min,label
+CNC-02,P-4471,A,material_jam,30.0,"P-4471 jams on CNC-02 shortly after setup, shift A"
+PRESS-01,P-8810,B,misfeed,,"P-8810 misfeeds on PRESS-01, shift B"
+PACK-01,P-2200,C,sensor_fault,,"P-2200 sensor faults on PACK-01, shift C"
+CNC-01,P-4472,A,tool_change,,"P-4472 long tool-change stoppages on CNC-01, shift A"
